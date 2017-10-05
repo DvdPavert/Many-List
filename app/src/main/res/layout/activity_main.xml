@@ -16,7 +16,8 @@
             android:id="@+id/listList"
             android:layout_width="match_parent"
             android:layout_height="424dp"
-            android:layout_weight="1.06" />
+            android:layout_weight="1.06"
+            android:longClickable="true"/>
 
         <Button
             android:id="@+id/button"

@@ -1,16 +1,26 @@
 package com.example.daniel.manylists;
 
+import java.io.Serializable;
+
 /**
  * Created by Daniel on 02/10/2017.
  */
 
-public class Task {
+public class Task implements Serializable{
 
     private int ID;
     private String name;
     private String task;
     private String status;
     private String list;
+
+    public Task(String name, String task)
+    {
+        this.ID = -1;
+        this.name = name;
+        this.task = task;
+        this.status = "incomplete";
+    }
 
     public Task(String name, String task, String list)
     {

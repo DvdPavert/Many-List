@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
         private static final String KEY_NAME = "name";
         private static final String KEY_TASK = "task";
         private static final String KEY_STATUS = "status";
-        private static final String KEY_LIST = "list";
+        private static final String KEY_LIST = "listTest";
         private static final String TABLE_CONTENT = "content";
         private static final String TABLE_LIST = "lists";
 
@@ -41,14 +42,28 @@ public class DBHelper extends SQLiteOpenHelper {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-                String CREATE_TABLE_CONTENT = "CREATE TABLE " + TABLE_CONTENT + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                        + KEY_NAME + " TEXT NOT NULL," + KEY_TASK + " TEXT NOT NULL," + KEY_STATUS + " TEXT NOT NULL)";
+                String CREATE_TABLE_CONTENT = "CREATE TABLE " + TABLE_CONTENT + "(" +
+                                                    KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                                    KEY_NAME + " TEXT NOT NULL," +
+                                                    KEY_TASK + " TEXT NOT NULL," +
+                                                    KEY_LIST + " TEXT NOT NULL," +
+                                                    KEY_STATUS + " TEXT NOT NULL" +
+                        "                       )";
 
-                String CREATE_TABLE_LISTS = "CREATE TABLE " + TABLE_LIST + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                        + KEY_NAME + " TEXT NOT NULL," + KEY_STATUS + " TEXT NOT NULL)";
+                String CREATE_TABLE_LISTS = "CREATE TABLE " + TABLE_LIST + "(" +
+                                                    KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                                    KEY_NAME + " TEXT NOT NULL," +
+                                                    KEY_STATUS + " TEXT NOT NULL" +
+                        "                       )";
 
                 db.execSQL(CREATE_TABLE_CONTENT);
                 db.execSQL(CREATE_TABLE_LISTS);
+        }
+
+        public void upgrade()
+        {
+            SQLiteDatabase db = getWritableDatabase();
+            onUpgrade(db, 1, 2);
         }
 
         @Override
@@ -56,6 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " +  TABLE_CONTENT);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIST);
             onCreate(db);
+            Log.d("TAG", "onUpgrade: blabla ");
         }
 
         public void createContent(Task task)
@@ -90,8 +106,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
             ArrayList<Task> list = new ArrayList<>();
 
-            String query =  "SELECT " + KEY_ID + ", " +  KEY_NAME + ", " +  KEY_TASK + ", " + KEY_STATUS
-                    + ", " + KEY_LIST  +" FROM " + TABLE_CONTENT + "WHERE" + KEY_LIST  + "=" + taskList;
+            String query =  "SELECT " +
+                                    KEY_ID + ", " +
+                                    KEY_NAME + ", " +
+                                    KEY_TASK + ", " +
+                                    KEY_STATUS + ", " +
+                                    KEY_LIST  +
+                            " FROM " + TABLE_CONTENT +
+                            " WHERE " + KEY_LIST  + " = " + "'" + taskList + "'";
 
             Cursor cursor = db.rawQuery(query, null);
 
@@ -123,7 +145,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
             ArrayList<TaskList> list = new ArrayList<>();
 
-            String query =  "SELECT " + KEY_ID + ", " +  KEY_NAME + ", " + KEY_STATUS +  " FROM " + TABLE_LIST; //// TODO: 04/10/2017 WHY ERROR HERE QUERY FUCKING HELL 
+            String query =  "SELECT " +
+                                KEY_ID + ", " +
+                                KEY_NAME + ", " +
+                                KEY_STATUS +
+                            " FROM " + TABLE_LIST;
 
             Cursor cursor = db.rawQuery(query, null);
 
@@ -159,6 +185,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
             return db.update(TABLE_CONTENT, values, KEY_ID + " = ? ", new String[] {String.valueOf(task.getID())});
 
+        }
+
+        public void deleteListContent(TaskList list)
+        {
+            SQLiteDatabase db = getWritableDatabase();
+            String deleteQuery =    "DELETE " +
+                                    "FROM " + TABLE_CONTENT +
+                                    " WHERE " + KEY_LIST + " = " + "'" + list.getName() + "'";
+            db.execSQL(deleteQuery);
         }
 
         public void deleteContent(Task task)

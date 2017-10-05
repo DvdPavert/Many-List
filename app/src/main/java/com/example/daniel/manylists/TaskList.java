@@ -1,5 +1,7 @@
 package com.example.daniel.manylists;
 
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -7,12 +9,12 @@ import java.util.ArrayList;
  * Created by Daniel on 02/10/2017.
  */
 
-public class TaskList {
+public class TaskList{
 
     private int ID;
     private String name;
     private String status;
-    private ArrayList<Task> contents;
+    private ArrayList<Task> contents = new ArrayList<>();
 
     public TaskList(int ID, String name, String status)
     {
@@ -28,6 +30,7 @@ public class TaskList {
 
     public void add(Task task)
     {
+        task.setList(this);
         contents.add(task);
     }
 
@@ -35,8 +38,6 @@ public class TaskList {
     {
         return contents;
     }
-
-
 
     public void delete(Task task)
     {
@@ -61,5 +62,10 @@ public class TaskList {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String toString()
+    {
+        return name;
     }
 }
