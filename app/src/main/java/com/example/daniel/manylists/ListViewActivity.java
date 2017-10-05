@@ -71,6 +71,7 @@ public class ListViewActivity extends AppCompatActivity {
                 Task selectedTask = (Task) listTasks.getItemAtPosition(position);
                 Intent intent =  new Intent(context, TaskViewActivity.class);
                 intent.putExtra("task", new Gson().toJson(selectedTask));
+                intent.putExtra("taskList", new Gson().toJson(taskList));
                 startActivity(intent);
             }
         });
